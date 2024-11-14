@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.zhengjie.mapper.AuthManageMapper">
+    <resultMap id="BaseResultMap" type="me.zhengjie.domain.AuthManage">
+        <id column="id" property="id"/>
+        <result column="auth_code" property="authCode"/>
+        <result column="machine_code" property="machineCode"/>
+        <result column="expiry_date" property="expiryDate"/>
+        <result column="available_chars" property="availableChars"/>
+        <result column="total_chars" property="totalChars"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="status" property="status"/>
+        <result column="remarks" property="remarks"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, auth_code, machine_code, expiry_date, available_chars, total_chars, created_at, updated_at, status, remarks
+    </sql>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from auth_manage
+        <where>
+            <if test="criteria.authCode != null">
+                and auth_code = #{criteria.authCode}
+            </if>
+            <if test="criteria.machineCode != null">
+                and machine_code = #{criteria.machineCode}
+            </if>
+            <if test="criteria.expiryDate != null">
+                and expiry_date = #{criteria.expiryDate}
+            </if>
+            <if test="criteria.createdAt != null">
+                and created_at = #{criteria.createdAt}
+            </if>
+            <if test="criteria.status != null">
+                and status = #{criteria.status}
+            </if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.zhengjie.mapper.LanguageCodeMappingMapper">
+    <resultMap id="BaseResultMap" type="me.zhengjie.domain.LanguageCodeMapping">
+        <id column="id" property="id"/>
+        <result column="system_language_code" property="systemLanguageCode"/>
+        <result column="api_name" property="apiName"/>
+        <result column="api_language_code" property="apiLanguageCode"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, system_language_code, api_name, api_language_code, created_at, updated_at
+    </sql>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from language_code_mapping
+        <where>
+            <if test="criteria.systemLanguageCode != null">
+                and system_language_code = #{criteria.systemLanguageCode}
+            </if>
+            <if test="criteria.apiName != null">
+                and api_name = #{criteria.apiName}
+            </if>
+        </where>
+        order by system_language_code desc
+    </select>
+</mapper>

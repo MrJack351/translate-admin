@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.zhengjie.mapper.TranslationProvidersMapper">
+    <resultMap id="BaseResultMap" type="me.zhengjie.domain.TranslationProviders">
+        <id column="id" property="id"/>
+        <result column="provider_name" property="providerName"/>
+        <result column="api_key" property="apiKey"/>
+        <result column="api_url" property="apiUrl"/>
+        <result column="status" property="status"/>
+        <result column="additional_config" property="additionalConfig"/>
+        <result column="supported_languages" property="supportedLanguages"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, provider_name, api_key, api_url, status, additional_config, supported_languages, created_at, updated_at
+    </sql>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from translation_providers
+        <where>
+        </where>
+        order by id desc
+    </select>
+</mapper>

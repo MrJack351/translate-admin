@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.zhengjie.mapper.MessageCacheMapper">
+    <resultMap id="BaseResultMap" type="me.zhengjie.domain.MessageCache">
+        <id column="id" property="id"/>
+        <result column="source_text" property="sourceText"/>
+        <result column="language" property="language"/>
+        <result column="translated_text" property="translatedText"/>
+        <result column="platform" property="platform"/>
+        <result column="status" property="status"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="auth_code" property="authCode"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, source_text, language, translated_text, platform, status, created_at, updated_at, auth_code
+    </sql>
+
+    <update id="updateMessageCache">
+        UPDATE message_cache
+        SET
+        translated_text = #{messageCache.translatedText},
+        status = #{messageCache.status},
+        updated_at = #{messageCache.updatedAt}
+        <if test="messageCache.platform != null">
+            , platform = #{messageCache.platform}
+        </if>
+        WHERE source_text = #{messageCache.sourceText}
+        AND language = #{messageCache.language}
+    </update>
+
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from message_cache
+        <where>
+            <if test="criteria.language != null">
+                and language = #{criteria.language}
+            </if>
+            <if test="criteria.status != null">
+                and status = #{criteria.status}
+            </if>
+            <if test="criteria.createdAt != null">
+                and created_at = #{criteria.createdAt}
+            </if>
+            <if test="criteria.platform != null">
+                and platform = #{criteria.platform}
+            </if>
+            <if test="criteria.authCode != null">
+                and auth_code = #{criteria.authCode}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="findMessageBySourceTextAndLanguage" resultType="me.zhengjie.domain.MessageCache">
+        SELECT
+            id,
+            source_text AS sourceText,
+            language,
+            translated_text AS translatedText,
+            platform,
+            status,
+            created_at AS createdAt,
+            updated_at AS updatedAt
+        FROM
+            message_cache
+        WHERE
+            source_text = #{sourceText}
+          AND language = #{language}
+    </select>
+</mapper>
