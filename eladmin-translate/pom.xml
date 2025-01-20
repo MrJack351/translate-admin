@@ -7,6 +7,19 @@
         <version>1.1</version>
     </parent>
     <artifactId>eladmin-translate</artifactId>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.cloud</groupId>
+                <artifactId>libraries-bom</artifactId>
+                <version>  26.53.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <!-- tools 模块包含了 common 和 logging 模块 -->
         <dependency>
@@ -18,6 +31,11 @@
             <groupId>com.volcengine</groupId>
             <artifactId>volc-sdk-java</artifactId>
             <version>1.0.188</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-translate</artifactId>
         </dependency>
     </dependencies>
 </project>

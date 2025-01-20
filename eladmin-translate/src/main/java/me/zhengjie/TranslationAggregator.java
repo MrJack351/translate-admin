@@ -74,26 +74,15 @@ public class TranslationAggregator {
             return messageCache.getTranslatedText();
         }
 
-        // 初始化 MessageCache 对象
-        if (messageCache == null) {
-            messageCache = new MessageCache();
-            messageCache.setSourceText(text);
-            messageCache.setLanguage(targetLang);
-            messageCache.setStatus("0");  // 状态为 0，表示正在翻译
-            messageCache.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            messageCache.setAuthCode(authManage.getAuthCode());
-            messageCacheService.create(messageCache);  // 插入一条初始记录
-        }
-
         // 设置最大总尝试时间（例如10秒）
         long maxTotalRetryTime = 10000;  // 最大重试时间（毫秒）
         long startTime = System.currentTimeMillis();
 
         // 调用翻译逻辑，使用非递归方式以避免StackOverflowError
-        return translateWithRetry(text, fromLang, targetLang, new HashSet<>(), 0, startTime, maxTotalRetryTime);
+        return translateWithRetry(authCode,text, fromLang, targetLang, new HashSet<>(), 0, startTime, maxTotalRetryTime);
     }
 
-    private String translateWithRetry(String text, String fromLang, String targetLang, Set<TranslationProvider> failedProviders, int attempt, long startTime, long maxTotalRetryTime) throws Exception {
+    private String translateWithRetry(String authCode,String text, String fromLang, String targetLang, Set<TranslationProvider> failedProviders, int attempt, long startTime, long maxTotalRetryTime) throws Exception {
         // 检查当前时间与开始时间的差值是否超过最大重试时间
         while (failedProviders.size() < providers.size()) {
             long currentTime = System.currentTimeMillis();
@@ -111,13 +100,16 @@ public class TranslationAggregator {
                     cache.cacheTranslation(text, result, targetLang);
 
                     // 设置 MessageCache 信息
-                    MessageCache messageCache = messageCacheService.getMessageCache(text, targetLang);
-                    messageCache.setPlatform(selectedProvider.getProviderName());
+                    MessageCache messageCache = new MessageCache();
+                    messageCache = new MessageCache();
+                    messageCache.setSourceText(text);
                     messageCache.setTranslatedText(result);
-                    messageCache.setStatus("1");  // 翻译成功
-                    messageCache.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-                    messageCacheService.updateMessageCache(messageCache);  // 更新缓存记录
-
+                    messageCache.setLanguage(targetLang);
+                    messageCache.setStatus("1");  // 状态为 0，表示正在翻译
+                    messageCache.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+                    messageCache.setAuthCode(authCode);
+                    messageCache.setPlatform(selectedProvider.getProviderName());
+                    messageCacheService.create(messageCache);  // 插入一条初始记录
                     return result;
                 }
             } catch (Exception e) {
